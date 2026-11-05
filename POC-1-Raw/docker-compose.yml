@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:17
+    container_name: django_poc_db
+    restart: always
+    environment:
+      POSTGRES_DB: django_poc
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
