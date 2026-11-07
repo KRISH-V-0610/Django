@@ -6,7 +6,7 @@
 
 ---
 
-## 1. The story (use this to walk someone through the project)
+## 1. The Idea : 
 
 **The shop:** a Keyboard, price ₹10, stock 5. Alice buys 2 through `POST /orders/place`.
 
