@@ -1,74 +1,80 @@
 
-
 # External Packages
-from ninja import Router, Query
+from ninja import Header, Router, Query
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 
 # Internal Packages
+from accounts.auth import jwt_auth
+from accounts.schemas import ErrorSchema
+from idempotency import service as idempotency
+from idempotency.service import make_fingerprint
+from transactions.services import OrderError, place_order
 from .models import Order
-from .schemas import OrderSchema, OrderUpdateSchema
+from .schemas import OrderOut, OrderSchema, OrderUpdateSchema, PlaceOrderOut, PlaceOrderSchema
 
-router = Router()
+router = Router(auth=jwt_auth)
 
-@router.post("/")
+@router.post("/", response={201: OrderOut})
 def create_order(request, data: OrderSchema):
     order = Order.objects.create(
         product_name=data.product_name,
         amount=data.amount
     )
-    
-    
-    return {
-        "id": order.id,
-        "product_name": order.product_name,
-        "amount": str(order.amount)
-    }
-    
-    
-@router.get("/")
+
+    return 201, order
+
+
+@router.post(
+    "/place",
+    response={201: PlaceOrderOut, 400: ErrorSchema, 404: ErrorSchema,
+              409: ErrorSchema, 422: ErrorSchema, 500: ErrorSchema},
+)   
+def place_order_api(
+    request,
+    data: PlaceOrderSchema,
+    idempotency_key: str | None = Header(None, alias="Idempotency-Key"),
+):
+    if not idempotency_key:
+        return 400, {"detail": "Idempotency-Key header is required."}
+
+    # 1. claim the key (or get a ready-made reply for a repeated request)
+    fingerprint = make_fingerprint(request, data.dict())
+    record, reply = idempotency.begin(request.auth, "place_order", idempotency_key, fingerprint)
+    if reply:
+        return reply
+
+    # 2. run the business operation + save its result in ONE transaction
+    try:
+        with transaction.atomic():
+            body = place_order(data.product_id, data.quantity, data.fail_at)
+            idempotency.complete(record, 201, body)
+    except OrderError as exc:
+        idempotency.abandon(record)  # rolled back -> let the client retry
+        return exc.status_code, {"detail": exc.message}
+    except Exception:
+        idempotency.abandon(record)
+        raise
+
+    return 201, body
+
+
+@router.get("/", response=list[OrderOut])
 def list_orders(
     request,
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0)
 ):
-    orders = Order.objects.order_by(
+    return Order.objects.order_by(
         "-created_at", "-id"
     )[offset:offset + limit]
 
-    return [
-        {
-            "id": order.id,
-            "product_name": order.product_name,
-            "amount": str(order.amount),
-            "created_at": order.created_at
-        }
-        for order in orders
-    ]
-
-@router.get("/{order_id}")
+@router.get("/{order_id}", response=OrderOut)
 def get_order(request, order_id: int):
-  
-  
-    # WITH SHORTCUT -------------------
-    order = get_object_or_404(Order, id=order_id)
-    
+    # get_object_or_404 returns the row, or answers 404 if it does not exist
+    return get_object_or_404(Order, id=order_id)
 
-    # WITHOUT SHORTCUT ---------------- 
-    # from django.http import Http404
-
-    # try:
-    #   order = Order.objects.get(id=order_id)
-    # except Order.DoesNotExist:
-    #   raise Http404("Order not found")
-
-    return {
-        "id": order.id,
-        "product_name": order.product_name,
-        "amount": str(order.amount),
-        "created_at": order.created_at
-    }   
-
-@router.patch("/{order_id}")
+@router.patch("/{order_id}", response={200: OrderOut, 400: ErrorSchema})
 def update_order(request, order_id: int, data: OrderUpdateSchema):
     order = get_object_or_404(Order, id=order_id)
 
@@ -85,9 +91,12 @@ def update_order(request, order_id: int, data: OrderUpdateSchema):
 
     order.save(update_fields=list(updates.keys()))
 
-    return {
-        "id": order.id,
-        "product_name": order.product_name,
-        "amount": str(order.amount),
-        "created_at": order.created_at
-    }
+    return 200, order
+
+
+@router.delete("/{order_id}", response={204: None})
+def delete_order(request, order_id: int):
+    order = get_object_or_404(Order, id=order_id)
+    order.delete()
+
+    return 204, None

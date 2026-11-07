@@ -1,46 +1,29 @@
-"""
-URL configuration for config project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+"""Root URLs: the Django admin plus the versioned Ninja API under /api/v1/."""
 
 from django.contrib import admin
 from django.urls import path
 
 from ninja import NinjaAPI
-# from orders.schemas import OrderSchema
+
+from accounts.api import router as accounts_router
 from orders.api import router as orders_router
+from transactions.api import router as products_router
 
 
-
-api = NinjaAPI()
-api.add_router("/orders", orders_router)    
-
-# @api.get("/hello")
-# def hello(request):
-#     return {"message": "Hello from Django Ninja!"}
-
-# @api.post("/orders")
-# def create_order(request, data: OrderSchema):
-#     return {
-#         "message": "Order received",
-#         "product": data.product_name,
-#         "amount": data.amount
-#     }
+# Versioned API: everything lives under /api/v1/.
+# A future breaking change would be a second NinjaAPI(version="2.0",
+# urls_namespace="v2") mounted at /api/v2/, while v1 keeps working.
+api_v1 = NinjaAPI(
+    title="POC 1 API",
+    version="1.0",
+    urls_namespace="v1",
+)
+api_v1.add_router("/orders", orders_router)
+api_v1.add_router("/auth", accounts_router)
+api_v1.add_router("/products", products_router)
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", api.urls),
+    path("api/v1/", api_v1.urls),
 ]

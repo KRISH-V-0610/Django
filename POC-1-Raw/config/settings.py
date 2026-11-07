@@ -17,6 +17,13 @@ env = environ.Env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 environ.Env.read_env(BASE_DIR / ".env")
 
+JWT_SECRET_KEY = env("JWT_SECRET_KEY")
+JWT_ACCESS_TOKEN_LIFETIME = env.int(
+    "JWT_ACCESS_TOKEN_LIFETIME", default=900)
+JWT_REFRESH_TOKEN_LIFETIME = env.int(
+    "JWT_REFRESH_TOKEN_LIFETIME", default=604800
+)
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 
@@ -48,6 +55,7 @@ INSTALLED_APPS = [
     "accounts",
     "orders",
     "idempotency",
+    "transactions",
 ]
 
 MIDDLEWARE = [
