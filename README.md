@@ -88,8 +88,8 @@ About the tests: POC 1 and 2 expect the Postgres container to be running. POC 3 
 Django-Learning/
 ├── POC-1/    accounts, orders, transactions, idempotency
 ├── POC-2/    shop app + python_features scripts
-├── POC-3/    asgi-demo, jobs (Redis Streams), owasp, scripts, ARCHITECTURE.md, OWASP.md
-└── POC-4/    temporal_app, orders, demos, ARCHITECTURE.md, CELERY_VS_TEMPORAL.md
+├── POC-3/    asgi-demo, jobs (Redis Streams), owasp, scripts, OWASP.md
+└── POC-4/    temporal_app, orders, demos, CELERY_VS_TEMPORAL.md
 ```
 
 ## Notes

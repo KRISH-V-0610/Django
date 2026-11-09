@@ -2,7 +2,7 @@
 
 An order-processing service where the API only **starts** a Temporal workflow and the workflow does the real work (validate, check stock, wait for approval, reserve stock, pay, send mail) with retries, compensation and signals/queries. The same project has demos for every topic of the assignment: retries and timeouts, heartbeats, child workflows, several workers, several task queues, schedules, and a worker that is killed and restarted in the middle of a workflow.
 
-Extra files: [ARCHITECTURE.md](ARCHITECTURE.md) (diagrams) · [CELERY_VS_TEMPORAL.md](CELERY_VS_TEMPORAL.md) (comparison and how to migrate a Celery task).
+Extra file: [CELERY_VS_TEMPORAL.md](CELERY_VS_TEMPORAL.md) (comparison and how to migrate a Celery task).
 
 ---
 
@@ -80,7 +80,6 @@ Seed data (`seed_products`): `WIDGET` 25.00 × 10, `GADGET` 40.00 × 2, `PRICEY`
 
 - The API and the demos are **clients**: they never run workflow code.
 - Workflow code only decides. Activities do the side effects (database, payment, email) through `orders/services.py`.
-- Full diagrams (sequence, saga flow, recovery, ER, task queues): [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## 6. Concepts
 

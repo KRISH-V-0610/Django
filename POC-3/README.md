@@ -4,7 +4,7 @@ A small backend where one request travels **client → API → database → Redi
 
 > **Warning:** the `/vulnerable` endpoints are broken on purpose. This project is for local use only. Never deploy it.
 
-Extra files: [ARCHITECTURE.md](ARCHITECTURE.md) (diagrams) · [OWASP.md](OWASP.md) (the 6 points for each OWASP topic).
+Extra file: [OWASP.md](OWASP.md) (the 6 points for each OWASP topic).
 
 ---
 
@@ -71,7 +71,7 @@ Environment variables (see `.env.example`): `SECRET_KEY`, `JWT_SECRET_KEY`, `DEB
  every hop creates spans ──▶ OpenTelemetry ──▶ Jaeger
 ```
 
-`config/asgi.py` is a tiny hand-written ASGI router (lifespan, websocket, http) wrapped by one pure-ASGI middleware. Everything under `/api` is handed to Django. More diagrams (trace, message states, idempotency, tables) are in [ARCHITECTURE.md](ARCHITECTURE.md).
+`config/asgi.py` is a tiny hand-written ASGI router (lifespan, websocket, http) wrapped by one pure-ASGI middleware. Everything under `/api` is handed to Django.
 
 ## 6. Concepts
 
@@ -83,7 +83,7 @@ Environment variables (see `.env.example`): `SECRET_KEY`, `JWT_SECRET_KEY`, `DEB
 | D. IDOR | vulnerable and secure routers over one model | `documents/api.py` |
 | E. OWASP | seven demos, vulnerable next to secure | `owasp/api.py`, `owasp/config_audit.py`, `core/security_log.py`, [OWASP.md](OWASP.md) |
 
-Rules the worker follows (details in ARCHITECTURE.md):
+Rules the worker follows:
 
 1. A message is only **acknowledged (XACK) after the work succeeded**. A crash before that leaves it pending.
 2. A pending message of a dead worker is taken over with **XCLAIM** after it has been idle for a while.
