@@ -194,7 +194,7 @@ Created, paused, resumed, triggered and deleted with `python -m temporal_app.sch
 ## 8. Project map
 
 ```
-POC-4-Raw/
+POC-4/
 ├── config/                  Django settings (env based), urls, asgi
 ├── orders/                  Django app: models, services (DB logic), api (Ninja), seed_products command
 ├── temporal_app/

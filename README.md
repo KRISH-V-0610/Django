@@ -7,9 +7,9 @@ These are the four backend POCs I built during my internship. Each one is a smal
 | # | Topic | Folder | Tests |
 |---|---|---|---|
 | 1 | Django Ninja API, JWT auth, idempotency, transactions | [POC-1](POC-1) | 30 |
-| 2 | Python 3.14 features, ORM constraints, F and Q objects | [POC-2-Raw](POC-2-Raw) | 48 |
-| 3 | ASGI, OpenTelemetry, Redis Streams workers, IDOR and OWASP | [POC-3-Raw](POC-3-Raw) | 105 |
-| 4 | Temporal instead of Celery | [POC-4-Raw](POC-4-Raw) | 106 |
+| 2 | Python 3.14 features, ORM constraints, F and Q objects | [POC-2](POC-2) | 48 |
+| 3 | ASGI, OpenTelemetry, Redis Streams workers, IDOR and OWASP | [POC-3](POC-3) | 105 |
+| 4 | Temporal instead of Celery | [POC-4](POC-4) | 106 |
 
 ## POC 1: Ninja API, JWT, idempotency, transactions
 
@@ -52,7 +52,7 @@ An order service where the API only starts a Temporal workflow, and the workflow
 - Retry policies, timeouts and heartbeats, child workflows, several task queues and workers, and schedules instead of Celery Beat.
 - A worker can be killed in the middle of a workflow and the workflow carries on at the same step when a worker comes back.
 
-There is also [CELERY_VS_TEMPORAL.md](POC-4-Raw/CELERY_VS_TEMPORAL.md), which compares the two and shows how I would migrate a Celery task.
+There is also [CELERY_VS_TEMPORAL.md](POC-4/CELERY_VS_TEMPORAL.md), which compares the two and shows how I would migrate a Celery task.
 
 Stack: Python 3.12, Django 6, Django Ninja, Uvicorn, Temporal, PostgreSQL 17, uv, pytest.
 
@@ -61,7 +61,7 @@ Stack: Python 3.12, Django 6, Django Ninja, Uvicorn, Temporal, PostgreSQL 17, uv
 You need Docker and [uv](https://docs.astral.sh/uv/). The basic steps are the same everywhere:
 
 ```bash
-cd POC-1                      # or POC-2-Raw, POC-3-Raw, POC-4-Raw
+cd POC-1                      # or POC-2, POC-3, POC-4
 docker compose up -d          # POC 2 has no compose file, it uses POC 1's database
 cp .env.example .env
 uv sync
@@ -86,10 +86,10 @@ About the tests: POC 1 and 2 expect the Postgres container to be running. POC 3 
 
 ```
 Django-Learning/
-├── POC-1/        accounts, orders, transactions, idempotency
-├── POC-2-Raw/    shop app + python_features scripts
-├── POC-3-Raw/    asgi-demo, jobs (Redis Streams), owasp, scripts, ARCHITECTURE.md, OWASP.md
-└── POC-4-Raw/    temporal_app, orders, demos, ARCHITECTURE.md, CELERY_VS_TEMPORAL.md
+├── POC-1/    accounts, orders, transactions, idempotency
+├── POC-2/    shop app + python_features scripts
+├── POC-3/    asgi-demo, jobs (Redis Streams), owasp, scripts, ARCHITECTURE.md, OWASP.md
+└── POC-4/    temporal_app, orders, demos, ARCHITECTURE.md, CELERY_VS_TEMPORAL.md
 ```
 
 ## Notes

@@ -32,7 +32,7 @@ Python 3.12 · Django 6 · Django Ninja 1.8 (async views) · Uvicorn · Temporal
 ## 4. Local setup
 
 ```bash
-cd POC-4-Raw
+cd POC-4
 docker compose up -d                  # postgres + temporal (UI: http://localhost:8233)
 cp .env.example .env                  # placeholder secrets, fine for local use
 uv sync

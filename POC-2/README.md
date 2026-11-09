@@ -45,7 +45,7 @@
 
 **You need:** Docker, [uv](https://docs.astral.sh/uv/), Python 3.14 (`uuid.uuid7()` exists only from 3.14).
 
-1. **Start Postgres on port 5433.** The container from `POC-1-Raw` works: `docker compose up -d` there.
+1. **Start Postgres on port 5433.** The container from `POC-1` works: `docker compose up -d` there.
 2. **Create the POC-2 database:**
    ```bash
    docker exec django_poc_db psql -U postgres -c "CREATE DATABASE django_poc2;"
@@ -72,7 +72,7 @@ uv run python -O -m python_features.assert_demo     # asserts OFF: the withdraw 
 ## 4. Project map
 
 ```
-POC-2-Raw/
+POC-2/
 ├── config/              # settings and URLs
 ├── shop/
 │   ├── models.py        # UUIDv7 keys, unique and check constraints

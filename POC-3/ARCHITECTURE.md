@@ -207,7 +207,7 @@ erDiagram
 ## 8. Project map
 
 ```
-POC-3-Raw/
+POC-3/
 ├── config/        settings, ASGI entry point (router + middleware), URLs, the NinjaAPI
 ├── core/          telemetry, ASGI middleware / lifespan / WebSocket, security log, demo endpoints
 ├── accounts/      JWT auth, register / login, lock-out after failed attempts

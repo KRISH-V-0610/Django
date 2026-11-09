@@ -31,7 +31,7 @@ Python 3.12 · Django 6 · Django Ninja 1.8 · Uvicorn · PostgreSQL 17 · Redis
 ## 4. Local setup
 
 ```bash
-cd POC-3-Raw
+cd POC-3
 docker compose up -d                  # postgres, redis, jaeger
 cp .env.example .env                  # placeholder secrets, fine for local use
 uv sync
