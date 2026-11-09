@@ -23,6 +23,10 @@ def with_walrus(text):
         return match.group()
     return None
 
+# match = re.search(r"\d+", "order 42")
+# if ( match ) :
+#     print("match found:", match.group())
+
 
 # ---- loop: read chunks until empty
 def read_chunks_without(data, size=3):

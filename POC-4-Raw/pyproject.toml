@@ -1,0 +1,31 @@
+[project]
+name = "django-poc-4"
+version = "0.1.0"
+description = "POC 4: Temporal order-processing workflows with a Django Ninja API"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "django>=6.0",
+    "django-environ>=0.14.0",
+    "django-ninja>=1.8.0",
+    "psycopg[binary]>=3.3.8",
+    "temporalio>=1.9.0",
+    "uvicorn>=0.30.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+    "pytest-asyncio>=1.0.0",
+    "pytest-django>=4.14.0",
+]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_files = ["test_*.py"]
+testpaths = ["tests"]
+pythonpath = ["."]
+# async tests need no marker, and share one event loop for the whole session so the
+# Temporal test server is started only once
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+asyncio_default_test_loop_scope = "session"

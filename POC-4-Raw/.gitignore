@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# files created by the demos
+data/
+reports/
+db.sqlite3
+
+# personal study notes
+docs/

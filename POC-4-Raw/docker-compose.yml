@@ -1,0 +1,28 @@
+services:
+  # database used by the Django app (orders, products, payments)
+  postgres:
+    image: postgres:17
+    container_name: django_poc4_db
+    environment:
+      POSTGRES_DB: django_poc4
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5435:5432"
+    volumes:
+      - poc4_postgres_data:/var/lib/postgresql/data
+
+  # Temporal server (dev mode) + Web UI
+  temporal:
+    image: temporalio/temporal:latest
+    container_name: django_poc4_temporal
+    command: server start-dev --ip 0.0.0.0 --db-filename /data/temporal.db
+    ports:
+      - "7233:7233"   # gRPC: clients and workers connect here
+      - "8233:8233"   # Web UI: http://localhost:8233
+    volumes:
+      - poc4_temporal_data:/data
+
+volumes:
+  poc4_postgres_data:
+  poc4_temporal_data:

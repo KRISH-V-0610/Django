@@ -12,6 +12,7 @@ class NormalPoint:  # can be changed after creation
 class FrozenPoint:  # cannot be changed after creation
     x: int
     y: int
+    z: int
 
 
 @dataclass(frozen=True)
